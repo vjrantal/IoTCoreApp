@@ -13,11 +13,14 @@ namespace IoTCoreApp
     public sealed class StartupTask : IBackgroundTask
     {
         private BackgroundTaskDeferral deferral;
+        private LampHandler lampHandler;
+
         public void Run(IBackgroundTaskInstance taskInstance)
         {
-            // 
-            // TODO: Insert code to start one or more asynchronous methods 
-            //
+            deferral = taskInstance.GetDeferral();
+            lampHandler = new LampHandler();
+            // On purpose not calling deferral.Complete() so that
+            // the app keeps running.
         }
     }
 }
