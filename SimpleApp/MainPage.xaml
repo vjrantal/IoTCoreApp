@@ -18,18 +18,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-
-        <Button Grid.Column="0" x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Click="button_Click"/>
-        <Button Grid.Column="0" x:Name="button1" Content="Send" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Click="button1_Click"/>
-        <Button Grid.Column="0" x:Name="button2" Content="Disconnect" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top" Click="button2_Click"/>
-        <ListBox
+            <Button Grid.Column="0" x:Name="button1" Content="Send" HorizontalAlignment="Left" Margin="10,117,0,0" VerticalAlignment="Top" Click="button1_Click" RenderTransformOrigin="0.445,-1.849"/>
+            <ListBox
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="0,20,20,20"
                 Background="LightBlue"
                 Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                 BorderBrush="Transparent"
-                ItemsSource="{Binding Path=Messages, ElementName=thisPage}">
+                ItemsSource="{Binding Path=LastMessages, ElementName=thisPage}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <controls:MessageItemControl />

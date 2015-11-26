@@ -109,7 +109,6 @@
   <ItemGroup>
     <Compile Include="Internal\AMQPClient.cs" />
     <Compile Include="Internal\Misc\Logger.cs" />
-    <Compile Include="Internal\NetworkAvailabilty.cs" />
     <Compile Include="IotHubClient.cs" />
     <Compile Include="Internal\IotHubEngine.cs" />
     <Compile Include="IotHubSettings.cs" />

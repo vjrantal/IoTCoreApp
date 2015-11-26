@@ -124,7 +124,7 @@ namespace IoTHubClient.Internal
             // the canonical Uri scheme is http because the token is not amqp specific
             // signature is computed from joined encoded request Uri string and expiry string
 
-            string expiry = BuildExpiresOn(TimeSpan.FromHours(1));
+            string expiry = BuildExpiresOn(TimeSpan.FromHours(12));
             string encodedUri = WebUtility.UrlEncode(resource);
             string sig = Sign(encodedUri + "\n" + expiry, sharedAccessKey);
 

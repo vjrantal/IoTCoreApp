@@ -1,4 +1,5 @@
 ﻿using IoTHubClient;
+using LightControl;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,7 +27,15 @@ namespace SimpleApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public ObservableCollection<string> Messages
+        public LightController Controller
+        {
+            get
+            {
+                return LightController.Instance;
+            }
+        }
+
+        public ObservableCollection<string> LastMessages
         {
             get; set;
         }
@@ -34,22 +43,20 @@ namespace SimpleApp
         public MainPage()
         {
             this.InitializeComponent();
-            Messages = new ObservableCollection<string>();
+            LastMessages = new ObservableCollection<string>();
         }
 
-        private async void button_Click(object sender, RoutedEventArgs e)
+        override protected void OnNavigatedTo(NavigationEventArgs e)
         {
-            IotHubSettings settings = new IotHubSettings();
-            if(await settings.LoadSettingsFromFileAsync())
-            {
-                await IotHubClient.Instance.ConnectAsync(settings);
-                IotHubClient.Instance.NewMessageReceived += OnNewMessageReceived;
-                Messages.Add("Connected succesfully");
+            InitializeController();
+        }
 
-            } else
-
+        private async void InitializeController()
+        {
+            if(await Controller.InitializeAsync(true))
             {
-                System.Diagnostics.Debug.WriteLine("Failed to load settings..");
+                Controller.NewEventReceived += OnNewMessageReceived;
+                LastMessages.Add("Connected..");
             }
         }
 
@@ -57,7 +64,7 @@ namespace SimpleApp
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                Messages.Add(e);
+                LastMessages.Add(e);
             });
         }
 
@@ -66,9 +73,5 @@ namespace SimpleApp
             await IotHubClient.Instance.SendMessageAsync("hello world");
         }
 
-        private async void button2_Click(object sender, RoutedEventArgs e)
-        {
-            await IotHubClient.Instance.DisconnectAsync();
-        }
     }
 }

@@ -20,16 +20,10 @@ namespace IoTHubClient
     {
         public event EventHandler<string> NewMessageReceived;
 
-        private NetworkAvailabilty  _networkAvailability;
         private AMQPClient          _amqpClient;
-        private bool                _shouldBeConnected; //If true, we try to reconnect when the network comes back
 
         public IotHubEngine()
         {
-            _shouldBeConnected = false;
-            _networkAvailability = NetworkAvailabilty.Instance;
-            _networkAvailability.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
-
             Logger.InitLocal("IotHubEngine.txt");
             Logger.PrintOut = true;
             Trace.TraceLevel = TraceLevel.Frame;
@@ -55,14 +49,12 @@ namespace IoTHubClient
 
                 if (connected)
                 {
-                    _shouldBeConnected = true;
                     _amqpClient.NewMessageReceived += OnNewMessageReceived;
                     System.Diagnostics.Debug.WriteLine("Connection successful");
                     return true;
                 }
                 else
                 {
-                    _shouldBeConnected = false;
                     System.Diagnostics.Debug.WriteLine("Connection failed");
                     return false;
                 }
@@ -79,7 +71,6 @@ namespace IoTHubClient
 
         public Task DisconnectAsync()
         {
-            _shouldBeConnected = false;
             return Task.Run(() =>
             {
                 CleanAmqpClient();
@@ -99,23 +90,6 @@ namespace IoTHubClient
                     return false;
                 }
             });
-        }
-
-        private void OnNetworkAvailabilityChanged(object sender, bool e)
-        {
-            Logger.Instance.Write("OnNetworkAvailabilityChanged:" + e);
-            if (e)
-            {
-                if(_shouldBeConnected)
-                {
-                    ConnectAsync();
-                }
-            }
-            else
-            {
-                Logger.Instance.Write("Network Disconnected:" + e);
-                CleanAmqpClient();
-            }
         }
 
         private void CleanAmqpClient()
