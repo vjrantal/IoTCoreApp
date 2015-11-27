@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking.Connectivity;
 
-namespace IoTHubClient.Internal
+namespace LightControl.Internal
 {
     public class NetworkAvailabilty
     {

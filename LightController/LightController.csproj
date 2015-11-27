@@ -107,7 +107,11 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\ControlMessage.cs" />
     <Compile Include="Internal\InactivityTimer.cs" />
+    <Compile Include="Internal\LampHandler.cs" />
+    <Compile Include="Internal\Message.cs" />
+    <Compile Include="Internal\MessageParser.cs" />
     <Compile Include="LightController.cs" />
     <Compile Include="Internal\NetworkAvailabilty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

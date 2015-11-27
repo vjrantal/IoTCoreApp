@@ -1,0 +1,12 @@
+Cloud to device control message that sets lights parameters
+{
+"Type":"Control",
+"On":0/1,                 
+"Brightness":0-100,
+"ColorTemp":0-10000,
+"Hue":0-360,
+"Saturation":0-100
+}
+
+Examples:
+{"Type":"Control","On":1,"Brightness":100,"ColorTemp":5000,"Hue":10,"Saturation":50}

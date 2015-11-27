@@ -1,5 +1,6 @@
 ﻿using IoTHubClient;
 using IoTHubClient.Internal;
+using LightControl.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace LightControl
         private IotHubSettings _settings;
         private InactivityTimer _inactivityTimer;
         private bool _isHeaded;
+        private LampHandler _lampHandler;
 
         /// <summary>
         /// The LightController instance.
@@ -50,6 +52,7 @@ namespace LightControl
             _networkAvailability = NetworkAvailabilty.Instance;
             _inactivityTimer = InactivityTimer.Instance;
             _settings = new IotHubSettings();
+            _lampHandler = new LampHandler();
 
             _networkAvailability.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
             _inactivityTimer.InactivityPeriodExceeded += OnInactivityPeriodExceeded;
@@ -82,6 +85,17 @@ namespace LightControl
         {
             SendNewEvent(e);
             InactivityTimer.Instance.ResetTimer();
+
+            Message msg = MessageParser.ParseMessage(e);
+
+            switch(msg.Type)
+            {
+                case Message.MessageType.Control:
+                {
+                    _lampHandler.ControlLights((ControlMessage)msg);
+                }
+                break;
+            }
         }
 
         /// <summary>
@@ -116,9 +130,9 @@ namespace LightControl
         /// </summary>
         private void SendNewEvent(string evt)
         {
-            if(evt.Length > 50)
+            if(evt.Length > 80)
             {
-                evt = evt.Substring(0, 50);
+                evt = evt.Substring(0, 80) + "...";
             }
 
             if(NewEventReceived != null)
