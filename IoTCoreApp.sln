@@ -4,12 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTCoreApp", "IoTCoreApp\IoTCoreApp.csproj", "{BE4EEF63-6846-4A12-BB0E-691B11CA336A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DE30323E-6919-4F30-8E02-BB15669C15AF} = {DE30323E-6919-4F30-8E02-BB15669C15AF}
+		{A440FB6B-4F95-4B2A-A062-191B465E848E} = {A440FB6B-4F95-4B2A-A062-191B465E848E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.allseen.LSF.LampState", "LightController\org.allseen.LSF.LampState\org.allseen.LSF.LampState.vcxproj", "{C84C9DAE-39B8-4116-A7C0-82514145E7E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleApp", "SimpleApp\SimpleApp.csproj", "{D68D6B4E-DD0D-4F33-922C-772765F433C6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A440FB6B-4F95-4B2A-A062-191B465E848E} = {A440FB6B-4F95-4B2A-A062-191B465E848E}
+		{C84C9DAE-39B8-4116-A7C0-82514145E7E6} = {C84C9DAE-39B8-4116-A7C0-82514145E7E6}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTHubClient", "IoTHubClient\IoTHubClient.csproj", "{DE30323E-6919-4F30-8E02-BB15669C15AF}"

@@ -96,7 +96,6 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LampHandler.cs" />
     <Compile Include="StartupTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -117,17 +116,9 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.allseen.LSF.LampDetails\org.allseen.LSF.LampDetails.vcxproj">
-      <Project>{f144d189-d665-4449-8398-529aba8fed99}</Project>
-      <Name>org.allseen.LSF.LampDetails</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\org.allseen.LSF.LampParameters\org.allseen.LSF.LampParameters.vcxproj">
-      <Project>{7b8af606-cc72-4058-af3d-6998cbc7c523}</Project>
-      <Name>org.allseen.LSF.LampParameters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\org.allseen.LSF.LampService\org.allseen.LSF.LampService.vcxproj">
-      <Project>{0ec9e068-8c38-4c6c-af4c-53a1a4bbc79e}</Project>
-      <Name>org.allseen.LSF.LampService</Name>
+    <ProjectReference Include="..\LightController\LightController.csproj">
+      <Project>{a440fb6b-4f95-4b2a-a062-191b465e848e}</Project>
+      <Name>LightController</Name>
     </ProjectReference>
     <ProjectReference Include="..\LightController\org.allseen.LSF.LampState\org.allseen.LSF.LampState.vcxproj">
       <Project>{c84c9dae-39b8-4116-a7c0-82514145e7e6}</Project>
