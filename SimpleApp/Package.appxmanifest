@@ -22,7 +22,7 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name=".txt" DesiredView="useLess">
+          <uap:FileTypeAssociation Name=".txt">
             <uap:SupportedFileTypes>
               <uap:FileType>.txt</uap:FileType>
             </uap:SupportedFileTypes>
@@ -31,10 +31,10 @@
       </Extensions>
     </Application>
   </Applications>
-  
   <Capabilities>
     <Capability Name="internetClient" />
     <Capability Name="allJoyn" />
+    <Capability Name="internetClientServer" />
     <uap:Capability Name="documentsLibrary" />
   </Capabilities>
 </Package>

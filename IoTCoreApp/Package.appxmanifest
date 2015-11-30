@@ -33,5 +33,6 @@
     <Capability Name="internetClient" />
     <Capability Name="allJoyn" />
     <Capability Name="internetClientServer" />
+    <uap:Capability Name="documentsLibrary" />
   </Capabilities>
 </Package>
