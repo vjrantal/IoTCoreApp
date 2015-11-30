@@ -5,19 +5,19 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTCoreApp", "IoTCoreApp\IoTCoreApp.csproj", "{BE4EEF63-6846-4A12-BB0E-691B11CA336A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.allseen.LSF.LampDetails", "org.allseen.LSF.LampDetails\org.allseen.LSF.LampDetails.vcxproj", "{F144D189-D665-4449-8398-529ABA8FED99}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.allseen.LSF.LampParameters", "org.allseen.LSF.LampParameters\org.allseen.LSF.LampParameters.vcxproj", "{7B8AF606-CC72-4058-AF3D-6998CBC7C523}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.allseen.LSF.LampService", "org.allseen.LSF.LampService\org.allseen.LSF.LampService.vcxproj", "{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.allseen.LSF.LampState", "org.allseen.LSF.LampState\org.allseen.LSF.LampState.vcxproj", "{C84C9DAE-39B8-4116-A7C0-82514145E7E6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.allseen.LSF.LampState", "LightController\org.allseen.LSF.LampState\org.allseen.LSF.LampState.vcxproj", "{C84C9DAE-39B8-4116-A7C0-82514145E7E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleApp", "SimpleApp\SimpleApp.csproj", "{D68D6B4E-DD0D-4F33-922C-772765F433C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A440FB6B-4F95-4B2A-A062-191B465E848E} = {A440FB6B-4F95-4B2A-A062-191B465E848E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTHubClient", "IoTHubClient\IoTHubClient.csproj", "{DE30323E-6919-4F30-8E02-BB15669C15AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightController", "LightController\LightController.csproj", "{A440FB6B-4F95-4B2A-A062-191B465E848E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C84C9DAE-39B8-4116-A7C0-82514145E7E6} = {C84C9DAE-39B8-4116-A7C0-82514145E7E6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,48 +51,6 @@ Global
 		{BE4EEF63-6846-4A12-BB0E-691B11CA336A}.Release|x86.ActiveCfg = Release|x86
 		{BE4EEF63-6846-4A12-BB0E-691B11CA336A}.Release|x86.Build.0 = Release|x86
 		{BE4EEF63-6846-4A12-BB0E-691B11CA336A}.Release|x86.Deploy.0 = Release|x86
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|ARM.ActiveCfg = Debug|ARM
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|ARM.Build.0 = Debug|ARM
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|x64.ActiveCfg = Debug|x64
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|x64.Build.0 = Debug|x64
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|x86.ActiveCfg = Debug|Win32
-		{F144D189-D665-4449-8398-529ABA8FED99}.Debug|x86.Build.0 = Debug|Win32
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|Any CPU.ActiveCfg = Release|Win32
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|ARM.ActiveCfg = Release|ARM
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|ARM.Build.0 = Release|ARM
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|x64.ActiveCfg = Release|x64
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|x64.Build.0 = Release|x64
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|x86.ActiveCfg = Release|Win32
-		{F144D189-D665-4449-8398-529ABA8FED99}.Release|x86.Build.0 = Release|Win32
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|ARM.ActiveCfg = Debug|ARM
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|ARM.Build.0 = Debug|ARM
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|x64.ActiveCfg = Debug|x64
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|x64.Build.0 = Debug|x64
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|x86.ActiveCfg = Debug|Win32
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Debug|x86.Build.0 = Debug|Win32
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|Any CPU.ActiveCfg = Release|Win32
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|ARM.ActiveCfg = Release|ARM
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|ARM.Build.0 = Release|ARM
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|x64.ActiveCfg = Release|x64
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|x64.Build.0 = Release|x64
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|x86.ActiveCfg = Release|Win32
-		{7B8AF606-CC72-4058-AF3D-6998CBC7C523}.Release|x86.Build.0 = Release|Win32
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|ARM.ActiveCfg = Debug|ARM
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|ARM.Build.0 = Debug|ARM
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|x64.ActiveCfg = Debug|x64
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|x64.Build.0 = Debug|x64
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|x86.ActiveCfg = Debug|Win32
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Debug|x86.Build.0 = Debug|Win32
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|Any CPU.ActiveCfg = Release|Win32
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|ARM.ActiveCfg = Release|ARM
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|ARM.Build.0 = Release|ARM
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|x64.ActiveCfg = Release|x64
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|x64.Build.0 = Release|x64
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|x86.ActiveCfg = Release|Win32
-		{0EC9E068-8C38-4C6C-AF4C-53A1A4BBC79E}.Release|x86.Build.0 = Release|Win32
 		{C84C9DAE-39B8-4116-A7C0-82514145E7E6}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{C84C9DAE-39B8-4116-A7C0-82514145E7E6}.Debug|ARM.ActiveCfg = Debug|ARM
 		{C84C9DAE-39B8-4116-A7C0-82514145E7E6}.Debug|ARM.Build.0 = Debug|ARM

@@ -129,7 +129,7 @@
       <Project>{0ec9e068-8c38-4c6c-af4c-53a1a4bbc79e}</Project>
       <Name>org.allseen.LSF.LampService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.allseen.LSF.LampState\org.allseen.LSF.LampState.vcxproj">
+    <ProjectReference Include="..\LightController\org.allseen.LSF.LampState\org.allseen.LSF.LampState.vcxproj">
       <Project>{c84c9dae-39b8-4116-a7c0-82514145e7e6}</Project>
       <Name>org.allseen.LSF.LampState</Name>
     </ProjectReference>
