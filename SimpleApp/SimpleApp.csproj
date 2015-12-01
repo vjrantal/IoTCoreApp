@@ -11,7 +11,7 @@
     <AssemblyName>SimpleApp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
@@ -112,6 +112,7 @@
     <None Include="SimpleApp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Settings\IotHubSettings.txt" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -136,10 +137,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IoTHubClient\IoTHubClient.csproj">
-      <Project>{de30323e-6919-4f30-8e02-bb15669c15af}</Project>
-      <Name>IoTHubClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LightController\LightController.csproj">
       <Project>{a440fb6b-4f95-4b2a-a062-191b465e848e}</Project>
       <Name>LightController</Name>

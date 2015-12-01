@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace IoTHubClient
 {
@@ -47,7 +48,9 @@ namespace IoTHubClient
         }
 
         /// <summary>
-        /// Tries to load settings from Documents\IotHubSettings.txt
+        /// Tries to load the settings first from the app local folder and then from application package. 
+        /// Changing IotHubSettings.txt content in application local folder makes it possible
+        /// to overwrite the app default settings
         /// Json structure is following:
         /// {
         /// "Host": "Iot Hub Host address",
@@ -58,20 +61,38 @@ namespace IoTHubClient
         /// </summary>
         public async Task<bool> LoadSettingsFromFileAsync()
         {
-            try
-            { 
-                var stream = await Windows.Storage.KnownFolders.DocumentsLibrary.OpenStreamForReadAsync("IotHubSettings.txt");
 
-                string text;
+            try
+            {
+                bool localFileExists = true;
+                string fileText;
+
+                var file = await  Windows.Storage.ApplicationData.Current.LocalFolder.TryGetItemAsync("IotHubSettings.txt");
+
+                if(file == null)
+                {
+                    localFileExists = false;
+                    file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(@"ms-appx:///Settings/IotHubSettings.txt"));
+                }
+ 
+                var stream = await ((StorageFile)file).OpenStreamForReadAsync();
+
+                
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    text = reader.ReadToEnd();
-                    JObject o = JObject.Parse(text);
+                    fileText = reader.ReadToEnd();
+                    JObject o = JObject.Parse(fileText);
 
                     Host = (string)o["Host"];
                     Port = (int)o["Port"];
                     DeviceId = (string)o["DeviceId"];
                     DeviceKey = (string)o["DeviceKey"];
+
+                    if(!localFileExists)
+                    {
+                        //Copy file from application Uri to local Folder
+                        await CopySettingsFileAsync(fileText);
+                    }
 
                     if (Host != string.Empty && Port != 0 && DeviceId != string.Empty && DeviceKey != string.Empty)
                         return true;
@@ -83,6 +104,12 @@ namespace IoTHubClient
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
             return false;
+        }
+
+        public async Task CopySettingsFileAsync(string settingsText)
+        {
+            Windows.Storage.StorageFile settingsFile = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFileAsync("IotHubSettings.txt", CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(settingsFile, settingsText);
         }
     }
 }

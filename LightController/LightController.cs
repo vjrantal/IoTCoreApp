@@ -2,10 +2,6 @@
 using IoTHubClient.Internal;
 using LightControl.Internal;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
@@ -53,7 +49,6 @@ namespace LightControl
             _inactivityTimer = InactivityTimer.Instance;
             _settings = new IotHubSettings();
             _lampHandler = new LampHandler();
-
             _networkAvailability.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
             _inactivityTimer.InactivityPeriodExceeded += OnInactivityPeriodExceeded;
         }
@@ -67,14 +62,15 @@ namespace LightControl
 
             if (await _settings.LoadSettingsFromFileAsync())
             {
-                await _iotHubClient.ConnectAsync(_settings);
-                _iotHubClient.NewMessageReceived += OnNewMessageReceivedFromIotHub;
-                
-                InactivityTimer.Instance.ResetTimer();
-                SendNewEvent("Initialized");
-                return true;
+                if(await _iotHubClient.ConnectAsync(_settings))
+                {
+                    _iotHubClient.NewMessageReceived += OnNewMessageReceivedFromIotHub;
+                    InactivityTimer.Instance.ResetTimer();
+                    SendNewEvent("Initialized");
+                    return true;
+                }
+                return false;
             }
-
             return false;
         }
 
@@ -110,7 +106,7 @@ namespace LightControl
             }
             else
             {
-                await _iotHubClient.DisconnectAsync();
+               await _iotHubClient.DisconnectAsync();
             }
         }
 

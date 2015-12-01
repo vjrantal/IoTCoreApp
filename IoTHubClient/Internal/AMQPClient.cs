@@ -29,7 +29,7 @@ namespace IoTHubClient.Internal
         private IotHubSettings _settings;
         private static readonly DateTime EpochTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-        public bool Connect(IotHubSettings settings)
+        public async Task<bool> ConnectAsync(IotHubSettings settings)
         {
             try
             {
@@ -39,14 +39,27 @@ namespace IoTHubClient.Internal
                 }
                     
                 _address = new Address(_settings.Host, _settings.Port, null, null);
-                _connection = new Connection(_address);
+
+                await Task.Run(() => {
+                    try { 
+                        _connection = new Connection(_address);
+                    } catch (Exception e)
+                    {
+                        _connection = null;
+                    }
+                });
+
+                if(_connection == null)
+                {
+                    return false;
+                }
 
                 string audience = Fx.Format("{0}/devices/{1}", _settings.Host, _settings.DeviceId);
                 string resourceUri = Fx.Format("{0}/devices/{1}", _settings.Host, _settings.DeviceId);
 
                 string sasToken = GetSharedAccessSignature(null, _settings.DeviceKey, resourceUri, new TimeSpan(1, 0, 0));
 
-                bool cbs = PutCbsToken(_connection, _settings.Host, sasToken, audience);
+                bool cbs = await PutCbsTokenAsync(_connection, _settings.Host, sasToken, audience);
 
                 if (cbs)
                 {
@@ -147,7 +160,7 @@ namespace IoTHubClient.Internal
             }
         }
 
-        private bool PutCbsToken(Connection connection, string host, string shareAccessSignature, string audience)
+        private async Task<bool> PutCbsTokenAsync(Connection connection, string host, string shareAccessSignature, string audience)
         {
             bool result = true;
             Session session = new Session(connection);
@@ -167,7 +180,7 @@ namespace IoTHubClient.Internal
             cbsSender.Send(request,2000);
 
             // receive the response
-            var response = cbsReceiver.Receive(2000);
+            var response = await cbsReceiver.ReceiveAsync(2000);
             if (response == null || response.Properties == null || response.ApplicationProperties == null)
             {
                 result = false;
@@ -183,9 +196,9 @@ namespace IoTHubClient.Internal
                 }
             }
             
-            cbsSender.Close(1000);
-            cbsReceiver.Close(1000);
-            session.Close(1000);
+            await cbsSender.CloseAsync(1000);
+            await cbsReceiver.CloseAsync(1000);
+            await session.CloseAsync(1000);
             session = null;
             return result;
         }

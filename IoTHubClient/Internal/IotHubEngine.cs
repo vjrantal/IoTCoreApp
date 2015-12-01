@@ -26,39 +26,36 @@ namespace IoTHubClient
         {
             Logger.InitLocal("IotHubEngine.txt");
             Logger.PrintOut = true;
-            Trace.TraceLevel = TraceLevel.Frame;
+            Trace.TraceLevel = TraceLevel.Error;
             Trace.TraceListener = (f, a) => Logger.Instance.Write(string.Format(f, a),true);
         }
 
-        public Task<bool> ConnectAsync(IotHubSettings settings = null)
+        public async Task<bool> ConnectAsync(IotHubSettings settings = null)
         {
             bool connected = false;
             int retryCount = 0;
 
-            return Task.Run( () =>
+            await DisconnectAsync();
+
+            while (retryCount < 5 && !connected)
             {
-                CleanAmqpClient();
+                System.Diagnostics.Debug.WriteLine("Try to connect.. Attempts:" + retryCount);
+                _amqpClient = new AMQPClient();
+                connected = await _amqpClient.ConnectAsync(settings);
+                retryCount++;
+            }
 
-                while (retryCount < 5 && !connected)
-                {
-                    System.Diagnostics.Debug.WriteLine("Try to connect.. Attempts:" + retryCount);
-                    _amqpClient = new AMQPClient();
-                    connected = _amqpClient.Connect(settings);
-                    retryCount++;
-                }
-
-                if (connected)
-                {
-                    _amqpClient.NewMessageReceived += OnNewMessageReceived;
-                    System.Diagnostics.Debug.WriteLine("Connection successful");
-                    return true;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Connection failed");
-                    return false;
-                }
-            });
+            if (connected)
+            {
+                _amqpClient.NewMessageReceived += OnNewMessageReceived;
+                System.Diagnostics.Debug.WriteLine("Connection successful");
+                return true;
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Connection failed");
+                return false;
+            }
         }
 
         private void OnNewMessageReceived(object sender, string msg)
@@ -67,14 +64,6 @@ namespace IoTHubClient
             {
                 NewMessageReceived(this, msg);
             }
-        }
-
-        public Task DisconnectAsync()
-        {
-            return Task.Run(() =>
-            {
-                CleanAmqpClient();
-            });
         }
 
         public Task<bool> SendMessageAsync(string msg)
@@ -92,14 +81,17 @@ namespace IoTHubClient
             });
         }
 
-        private void CleanAmqpClient()
+        public Task DisconnectAsync()
         {
-            if (_amqpClient != null)
+            return Task.Run(() =>
             {
-                _amqpClient.Disconnect();
-                _amqpClient.NewMessageReceived -= OnNewMessageReceived;
-                _amqpClient = null;
-            }
+                if (_amqpClient != null)
+                {
+                    _amqpClient.Disconnect();
+                    _amqpClient.NewMessageReceived -= OnNewMessageReceived;
+                    _amqpClient = null;
+                }
+            });
         }
     }
 }

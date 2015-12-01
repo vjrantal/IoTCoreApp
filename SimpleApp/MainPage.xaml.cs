@@ -1,5 +1,4 @@
-﻿using IoTHubClient;
-using LightControl;
+﻿using LightControl;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -68,10 +67,6 @@ namespace SimpleApp
             });
         }
 
-        private async void button1_Click(object sender, RoutedEventArgs e)
-        {
-            await IotHubClient.Instance.SendMessageAsync("hello world");
-        }
 
     }
 }
