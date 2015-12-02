@@ -39,21 +39,24 @@ namespace IoTHubClient.Internal
                 }
                     
                 _address = new Address(_settings.Host, _settings.Port, null, null);
-
+                            
                 await Task.Run(() => {
-                    try { 
+                    try
+                    {
                         _connection = new Connection(_address);
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         _connection = null;
+                        _address = null;
                     }
                 });
 
-                if(_connection == null)
-                {
+                if (_connection == null)
                     return false;
-                }
-
+                    
+                
+               
                 string audience = Fx.Format("{0}/devices/{1}", _settings.Host, _settings.DeviceId);
                 string resourceUri = Fx.Format("{0}/devices/{1}", _settings.Host, _settings.DeviceId);
 
@@ -80,19 +83,39 @@ namespace IoTHubClient.Internal
         {
             if(_receiveLink != null)
             {
-                _receiveLink.Close(1);
+                _receiveLink.Close(0);
                 _receiveLink = null;
             }
             if(_session != null)
             {
-                _session.Close(1);
+                _session.Close(0);
                 _session = null;
             }
             if(_connection != null)
             {
-                _connection.Close(1);
+                _connection.Close(0);
                 _connection = null;
             }
+        }
+
+        public async Task DisconnectAsync()
+        {
+            if (_connection != null)
+            {
+                try
+                { 
+                    await _connection.CloseAsync(0);
+                }
+                catch (AmqpException ex)
+                {
+                    System.Diagnostics.Debug.Write(ex.Message);
+                }
+
+                _receiveLink = null;
+                _connection = null;
+                _session = null;
+            }
+
         }
 
         public bool SendMsg(string msg)
@@ -125,9 +148,7 @@ namespace IoTHubClient.Internal
         private void StartToListen()
         {
             string entity = Fx.Format("/devices/{0}/messages/deviceBound", _settings.DeviceId);
-
             _receiveLink = new ReceiverLink(_session, "receive-link", entity);
-
             _receiveLink.Start(5, OnMessageCallback);
         }
 
@@ -168,6 +189,7 @@ namespace IoTHubClient.Internal
             string cbsReplyToAddress = "cbs-reply-to";
             var cbsSender = new SenderLink(session, "cbs-sender", "$cbs");
             var cbsReceiver = new ReceiverLink(session, cbsReplyToAddress, "$cbs");
+            
             // construct the put-token message
             var request = new Message(shareAccessSignature);
             request.Properties = new Properties();
@@ -177,7 +199,9 @@ namespace IoTHubClient.Internal
             request.ApplicationProperties["operation"] = "put-token";
             request.ApplicationProperties["type"] = "azure-devices.net:sastoken";
             request.ApplicationProperties["name"] = audience;
+
             cbsSender.Send(request,2000);
+
 
             // receive the response
             var response = await cbsReceiver.ReceiveAsync(2000);
@@ -199,7 +223,6 @@ namespace IoTHubClient.Internal
             await cbsSender.CloseAsync(1000);
             await cbsReceiver.CloseAsync(1000);
             await session.CloseAsync(1000);
-            session = null;
             return result;
         }
 
@@ -234,22 +257,12 @@ namespace IoTHubClient.Internal
             receiver.Accept(message);
             receiver.SetCredit(5);
 
-            if (String.Equals(msg, "ping") )
+            if (NewMessageReceived != null)
             {
                 Task.Run(() =>
                 {
-                    Logger.Instance.Write("sending ping back..");
-                    SendMsg("ping");
+                    NewMessageReceived(this, msg);
                 });
-            } else
-            {
-                if(NewMessageReceived != null)
-                {
-                    Task.Run(() =>
-                    {
-                        NewMessageReceived(this, msg);
-                    });
-                }
             }
         }
     }

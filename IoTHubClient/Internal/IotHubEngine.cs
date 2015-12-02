@@ -26,8 +26,8 @@ namespace IoTHubClient
         {
             Logger.InitLocal("IotHubEngine.txt");
             Logger.PrintOut = true;
-            Trace.TraceLevel = TraceLevel.Error;
-            Trace.TraceListener = (f, a) => Logger.Instance.Write(string.Format(f, a),true);
+            Trace.TraceLevel = TraceLevel.Verbose;
+            Trace.TraceListener = (f, a) => Logger.Instance.Write(string.Format(f, a),false);
         }
 
         public async Task<bool> ConnectAsync(IotHubSettings settings = null)
@@ -81,17 +81,15 @@ namespace IoTHubClient
             });
         }
 
-        public Task DisconnectAsync()
+        public async Task DisconnectAsync()
         {
-            return Task.Run(() =>
+            if (_amqpClient != null)
             {
-                if (_amqpClient != null)
-                {
-                    _amqpClient.Disconnect();
-                    _amqpClient.NewMessageReceived -= OnNewMessageReceived;
-                    _amqpClient = null;
-                }
-            });
+                await _amqpClient.DisconnectAsync();
+                _amqpClient.NewMessageReceived -= OnNewMessageReceived;
+                _amqpClient = null;
+            }
+
         }
     }
 }
