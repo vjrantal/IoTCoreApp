@@ -31,7 +31,12 @@
                         <controls:MessageItemControl />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-        </ListBox>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="2"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
     </Grid>
     </Grid>
 </Page>

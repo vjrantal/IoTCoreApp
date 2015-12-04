@@ -107,6 +107,9 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\LampValue.cs" />
+    <Compile Include="Internal\StopMessage.cs" />
+    <Compile Include="Internal\StartMessage.cs" />
     <Compile Include="Internal\ControlMessage.cs" />
     <Compile Include="Internal\InactivityTimer.cs" />
     <Compile Include="Internal\LampHandler.cs" />

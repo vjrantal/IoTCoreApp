@@ -52,11 +52,21 @@ namespace SimpleApp
 
         private async void InitializeController()
         {
-            if(await Controller.InitializeAsync(true))
+            Controller.LampHandler.NewEventReceived += OnLampHandlerNewEventReceived;
+
+            if (await Controller.InitializeAsync(true))
             {
                 Controller.NewEventReceived += OnNewMessageReceived;
                 LastMessages.Add("Connected..");
             }
+        }
+
+        private async void OnLampHandlerNewEventReceived(object sender, string e)
+        {
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                LastMessages.Add(e);
+            });
         }
 
         private async void OnNewMessageReceived(object sender, string e)

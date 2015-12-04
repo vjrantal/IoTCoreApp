@@ -10,3 +10,13 @@ Cloud to device control message that sets lights parameters
 
 Examples:
 {"Type":"Control","On":1,"Brightness":100,"ColorTemp":5000,"Hue":10,"Saturation":50}
+
+Cloud to device message that sets lights on
+{
+"Type":"Start",
+}
+
+Cloud to device message that sets lights off
+{
+"Type":"Stop",
+}

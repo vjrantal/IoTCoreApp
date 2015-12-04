@@ -9,7 +9,7 @@ namespace LightControl.Internal
 
     public class Message
     {
-        public enum MessageType { Control, Unknown };
+        public enum MessageType { Control, Unknown, Start, Stop };
 
         public MessageType Type
         {

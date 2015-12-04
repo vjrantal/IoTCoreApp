@@ -10,11 +10,12 @@
     d:DesignWidth="300">
     <Grid Background="Transparent">
         <TextBlock
-            Margin="6"
+            Margin="2"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             TextAlignment="Left"
-            Style="{ThemeResource SubtitleTextBlockStyle}"
+            Foreground="White"
+            Style="{ThemeResource BaseTextBlockStyle}"
             Text="{Binding FallbackValue='(device name)'}" />
     </Grid>
 </UserControl>

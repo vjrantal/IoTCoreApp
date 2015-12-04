@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using LightControl.Internal;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,27 +11,7 @@ namespace LightControl.Internal
     public class ControlMessage
         : Message
     {
-        public bool On
-        {
-            get; set;
-        }
-
-        public uint Brightness
-        {
-            get; set;
-        }
-
-        public uint ColorTemp
-        {
-            get; set;
-        }
-
-        public uint Hue
-        {
-            get; set;
-        }
-
-        public uint Saturation
+        public LampValue LampValue
         {
             get; set;
         }
@@ -44,11 +25,11 @@ namespace LightControl.Internal
         public static ControlMessage Create(JObject obj)
         {
             ControlMessage ctrlMsg = new ControlMessage();
-            ctrlMsg.On = (bool)obj["On"];
-            ctrlMsg.Brightness = (uint)obj["Brightness"];
-            ctrlMsg.ColorTemp = (uint)obj["ColorTemp"];
-            ctrlMsg.Hue = (uint)obj["Hue"];
-            ctrlMsg.Saturation = (uint)obj["Saturation"];
+            ctrlMsg.LampValue.On = (bool)obj["On"];
+            ctrlMsg.LampValue.Brightness = (uint)obj["Brightness"];
+            ctrlMsg.LampValue.ColorTemp = (uint)obj["ColorTemp"];
+            ctrlMsg.LampValue.Hue = (uint)obj["Hue"];
+            ctrlMsg.LampValue.Saturation = (uint)obj["Saturation"];
             return ctrlMsg;
         }
     }

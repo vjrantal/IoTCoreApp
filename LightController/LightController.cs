@@ -39,6 +39,12 @@ namespace LightControl
         }
         static LightController _instance = null;
 
+        public LampHandler LampHandler
+        {
+            get { return _lampHandler; }
+            
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -86,11 +92,24 @@ namespace LightControl
 
             switch(msg.Type)
             {
+
                 case Message.MessageType.Control:
                 {
                     _lampHandler.ControlLights((ControlMessage)msg);
+                    break;
                 }
-                break;
+
+                case Message.MessageType.Stop:
+                {
+                    _lampHandler.StopLightsAsync();
+                    break;
+                }
+
+                case Message.MessageType.Start:
+                {
+                    _lampHandler.StartLightsAsync();
+                    break;
+                }
             }
         }
 
@@ -99,14 +118,17 @@ namespace LightControl
         /// </summary>
         private async void OnNetworkAvailabilityChanged(object sender, bool e)
         {
+            
             //Disconnects iothub client when the network is down
             if (e)
             {
+                SendNewEvent("Network Connected");
                 await _iotHubClient.ConnectAsync(_settings);
             }
             else
             {
-               await _iotHubClient.DisconnectAsync();
+                SendNewEvent("Network Disconnected");
+                await _iotHubClient.DisconnectAsync();
             }
         }
 
