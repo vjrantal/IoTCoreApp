@@ -20,6 +20,7 @@ namespace LightControl.Internal
             base()
         {
             Type = MessageType.Control;
+            LampValue = new LampValue();
         }
 
         public static ControlMessage Create(JObject obj)
