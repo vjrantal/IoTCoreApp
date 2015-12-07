@@ -80,11 +80,15 @@ namespace LightControl
 
         private async Task SetValuesAsync(LampStateConsumer consumer, LampValue values)
         {
-            await consumer.SetOnOffAsync(values.On);
-            await consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
-            await consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
-            await consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
-            await consumer.SetSaturationAsync(values.Saturation);
+            LampStateSetOnOffResult lampOnOffStatus = await consumer.SetOnOffAsync(values.On);
+            
+            LampStateSetBrightnessResult resultBrightness = await consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
+            LampStateSetColorTempResult resultSetColor = await consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
+            LampStateSetHueResult hueResult = await consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
+            LampStateSetSaturationResult saturationResult = await consumer.SetSaturationAsync(values.Saturation);
+            
+            System.Diagnostics.Debug.WriteLine(String.Format("SetValueAsync Results: lampOnOffStatus {0}, Brightness {1}, ColorTemp {2}, Hue {3}, Saturation {4}",
+                lampOnOffStatus.Status,resultBrightness.Status,resultSetColor.Status, hueResult.Status, saturationResult.Status));
         }
 
 
