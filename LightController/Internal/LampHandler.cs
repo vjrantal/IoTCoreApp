@@ -38,12 +38,11 @@ namespace LightControl
 
             _defaulsWhenOff = new LampValue() { On = false, Brightness = 90, ColorTemp = 5000, Hue = 180, Saturation = 60 };
             _defaulsWhenOn = new LampValue() { On = true, Brightness = 90, ColorTemp = 5000, Hue = 180, Saturation = 60 };
-            _lastValues = _defaulsWhenOff;
+            _lastValues = null;
         }
 
         public async Task StartLightsAsync()
         {
-            _lastValues = _defaulsWhenOn;
             foreach (var consumer in Consumers)
             {
                 if (consumer.Value != null)
@@ -51,11 +50,11 @@ namespace LightControl
                     await SetValuesAsync(consumer.Value, _defaulsWhenOn);
                 }
             }
+            _lastValues = _defaulsWhenOn;
         }
 
         public async Task StopLightsAsync()
         {
-            _lastValues = _defaulsWhenOff;
             foreach (var consumer in Consumers)
             {
                 if (consumer.Value != null)
@@ -63,12 +62,11 @@ namespace LightControl
                     await SetValuesAsync(consumer.Value, _defaulsWhenOff);
                 }
             }
+            _lastValues = _defaulsWhenOff;
         }
 
         public async Task ControlLightsAsync(ControlMessage controlMsg)
         {
-            _lastValues = controlMsg.LampValue;
-
             foreach (var consumer in Consumers)
             {
                 if (consumer.Value != null)
@@ -76,19 +74,16 @@ namespace LightControl
                     await SetValuesAsync(consumer.Value, controlMsg.LampValue);
                 }
             }
+            _lastValues = controlMsg.LampValue;
         }
 
         private async Task SetValuesAsync(LampStateConsumer consumer, LampValue values)
         {
-            LampStateSetOnOffResult lampOnOffStatus = await consumer.SetOnOffAsync(values.On);
-            
-            LampStateSetBrightnessResult resultBrightness = await consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
-            LampStateSetColorTempResult resultSetColor = await consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
-            LampStateSetHueResult hueResult = await consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
-            LampStateSetSaturationResult saturationResult = await consumer.SetSaturationAsync(values.Saturation);
-            
-            System.Diagnostics.Debug.WriteLine(String.Format("SetValueAsync Results: lampOnOffStatus {0}, Brightness {1}, ColorTemp {2}, Hue {3}, Saturation {4}",
-                lampOnOffStatus.Status,resultBrightness.Status,resultSetColor.Status, hueResult.Status, saturationResult.Status));
+            if (_lastValues == null || _lastValues.On != values.On) await consumer.SetOnOffAsync(values.On);
+            if (_lastValues == null || _lastValues.Brightness != values.Brightness) await consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
+            if (_lastValues == null || _lastValues.ColorTemp != values.ColorTemp) await consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
+            if (_lastValues == null || _lastValues.Hue != values.Hue) await consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
+            if (_lastValues == null || _lastValues.Saturation != values.Saturation) await consumer.SetSaturationAsync(getAbsoluteValue(values.Saturation));
         }
 
 
@@ -108,11 +103,6 @@ namespace LightControl
                 Consumers.Add(args.UniqueName,joinSessionResult.Consumer);
                 
                 joinSessionResult.Consumer.SessionLost += OnConsumerSessionLost;
-
-                if(_lastValues != null)
-                {
-                   await SetValuesAsync(joinSessionResult.Consumer, _lastValues);
-                }
             }
         }
 
@@ -145,22 +135,19 @@ namespace LightControl
 
         private uint getAbsoluteValue(uint value)
         {
-            return Convert.ToUInt32((double)value/100.0 * UInt32.MaxValue);
+            return Convert.ToUInt32((double)value / 100.0 * UInt32.MaxValue);
         }
 
         private uint getAbsoluteHueValue(uint value)
         {
-            return Convert.ToUInt32(value * ((0xFFFFFFFF - 1) / 360));
+            return Convert.ToUInt32((double)value / 360.0 * UInt32.MaxValue);
         }
 
         private uint getAbsoluteColorTemperatureValue(uint value)
         {
-            return Convert.ToUInt32(value * ((0xFFFFFFFF - 1) / 10000));
-        }
-
-        private uint getRelativeValue(uint value)
-        {
-            return Convert.ToUInt32(value / ((0xFFFFFFFF - 1) / 100));
+            // Minimum color temperature for Lifx bulbs is 2500
+            if (value < 2500) value = 2500;
+            return Convert.ToUInt32((double)value / 9000.0 * UInt32.MaxValue);
         }
     }
 }
