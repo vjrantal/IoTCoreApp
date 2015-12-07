@@ -89,7 +89,7 @@ namespace LightControl
         /// <summary>
         /// Event handler for new messages from the IoT Hub
         /// </summary>
-        private void OnNewMessageReceivedFromIotHub(object sender, string e)
+        private async void OnNewMessageReceivedFromIotHub(object sender, string e)
         {
             System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub start");
 
@@ -105,19 +105,19 @@ namespace LightControl
                     case Message.MessageType.Control:
                         {
 
-                            _lampHandler.ControlLightsAsync((ControlMessage)msg).Wait();
+                            await _lampHandler.ControlLightsAsync((ControlMessage)msg);
                             break;
                         }
 
                     case Message.MessageType.Stop:
                         {
-                            _lampHandler.StopLightsAsync().Wait();
+                            await _lampHandler.StopLightsAsync();
                             break;
                         }
 
                     case Message.MessageType.Start:
                         {
-                            _lampHandler.StartLightsAsync().Wait();
+                            await _lampHandler.StartLightsAsync();
                             break;
                         }
                 }

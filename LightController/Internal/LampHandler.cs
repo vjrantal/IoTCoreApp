@@ -80,10 +80,10 @@ namespace LightControl
 
         private async Task SetValuesAsync(LampStateConsumer consumer, LampValue values)
         {
+            await consumer.SetOnOffAsync(values.On);
             await consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
             await consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
             await consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
-            await consumer.SetOnOffAsync(values.On);
             await consumer.SetSaturationAsync(values.Saturation);
         }
 
@@ -141,7 +141,7 @@ namespace LightControl
 
         private uint getAbsoluteValue(uint value)
         {
-            return Convert.ToUInt32(value * ((0xFFFFFFFF - 1) / 100));
+            return Convert.ToUInt32((double)value/100.0 * UInt32.MaxValue);
         }
 
         private uint getAbsoluteHueValue(uint value)
