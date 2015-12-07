@@ -79,25 +79,6 @@ namespace IoTHubClient.Internal
             return false;
         }
 
-        public void Disconnect()
-        {
-            if(_receiveLink != null)
-            {
-                _receiveLink.Close(0);
-                _receiveLink = null;
-            }
-            if(_session != null)
-            {
-                _session.Close(0);
-                _session = null;
-            }
-            if(_connection != null)
-            {
-                _connection.Close(0);
-                _connection = null;
-            }
-        }
-
         public async Task DisconnectAsync()
         {
             if (_connection != null)
@@ -108,12 +89,13 @@ namespace IoTHubClient.Internal
                 }
                 catch (AmqpException ex)
                 {
+                    System.Diagnostics.Debug.WriteLine("DisconnectAsync exception:");
                     System.Diagnostics.Debug.Write(ex.Message);
                 }
 
                 _receiveLink = null;
-                _connection = null;
                 _session = null;
+                _connection = null;
             }
 
         }
@@ -130,7 +112,6 @@ namespace IoTHubClient.Internal
                 Message message = new Message()
                 {
                     BodySection = new Data() { Binary = messageValue }
-                   
                 };
 
                 senderLink.Send(message);
@@ -251,9 +232,8 @@ namespace IoTHubClient.Internal
             byte[] b = (byte[])message.Body;
             string msg = Encoding.UTF8.GetString(b);
 
-            System.Diagnostics.Debug.WriteLine(msg);
             Logger.Instance.Write("Incoming:" + msg);
-            // Do something with the value
+           
             receiver.Accept(message);
             receiver.SetCredit(5);
 

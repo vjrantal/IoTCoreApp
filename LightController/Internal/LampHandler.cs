@@ -38,32 +38,34 @@ namespace LightControl
 
             _defaulsWhenOff = new LampValue() { On = false, Brightness = 90, ColorTemp = 5000, Hue = 180, Saturation = 60 };
             _defaulsWhenOn = new LampValue() { On = true, Brightness = 90, ColorTemp = 5000, Hue = 180, Saturation = 60 };
-
+            _lastValues = _defaulsWhenOff;
         }
 
         public async Task StartLightsAsync()
         {
+            _lastValues = _defaulsWhenOn;
             foreach (var consumer in Consumers)
             {
                 if (consumer.Value != null)
                 {
-                    SetValues(consumer.Value, _defaulsWhenOn);
+                    await SetValuesAsync(consumer.Value, _defaulsWhenOn);
                 }
             }
         }
 
         public async Task StopLightsAsync()
         {
+            _lastValues = _defaulsWhenOff;
             foreach (var consumer in Consumers)
             {
                 if (consumer.Value != null)
                 {
-                    SetValues(consumer.Value, _defaulsWhenOff);
+                    await SetValuesAsync(consumer.Value, _defaulsWhenOff);
                 }
             }
         }
 
-        public async Task ControlLights(ControlMessage controlMsg)
+        public async Task ControlLightsAsync(ControlMessage controlMsg)
         {
             _lastValues = controlMsg.LampValue;
 
@@ -71,18 +73,18 @@ namespace LightControl
             {
                 if (consumer.Value != null)
                 {
-                    SetValues(consumer.Value, controlMsg.LampValue);
+                    await SetValuesAsync(consumer.Value, controlMsg.LampValue);
                 }
             }
         }
 
-        private async Task SetValues(LampStateConsumer consumer, LampValue values)
+        private async Task SetValuesAsync(LampStateConsumer consumer, LampValue values)
         {
-            consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
-            consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
-            consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
-            consumer.SetOnOffAsync(values.On);
-            consumer.SetSaturationAsync(values.Saturation);
+            await consumer.SetBrightnessAsync(getAbsoluteValue(values.Brightness));
+            await consumer.SetColorTempAsync(getAbsoluteColorTemperatureValue(values.ColorTemp));
+            await consumer.SetHueAsync(getAbsoluteHueValue(values.Hue));
+            await consumer.SetOnOffAsync(values.On);
+            await consumer.SetSaturationAsync(values.Saturation);
         }
 
 
@@ -105,9 +107,8 @@ namespace LightControl
 
                 if(_lastValues != null)
                 {
-                    SetValues(joinSessionResult.Consumer, _lastValues);
+                   await SetValuesAsync(joinSessionResult.Consumer, _lastValues);
                 }
-                
             }
         }
 

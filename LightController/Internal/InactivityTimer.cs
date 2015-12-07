@@ -13,26 +13,27 @@ namespace LightControl
     class InactivityTimer
     {
         public event EventHandler InactivityPeriodExceeded;
+        public static readonly int InactivityPeriod = 60 * 60 * 1000; //one hour
+        public static readonly int LampChecker = 1 * 30 * 1000;  //every minute
 
-        private static Timer _timer = null;
-        private static readonly int InactivityPeriod = 60 * 60 * 1000; //one hour
+        private Timer _timer = null;
+        private int _period;
 
         /// <summary>
-        /// The InactivityTimer instance.
+        /// The InactivityTimer factory
         /// </summary>
-        static public InactivityTimer Instance
+        static public InactivityTimer CreateTimer(int period)
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new InactivityTimer();
-                }
-
-                return _instance;
-            }
+            return new InactivityTimer(period);
         }
-        static InactivityTimer _instance = null;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public InactivityTimer(int period)
+        {
+            _period = period;
+        }
 
         public void ResetTimer()
         {
@@ -43,7 +44,7 @@ namespace LightControl
             }
             
             // Create a timer with one hour interval.
-            _timer = new Timer(new TimerCallback(TimerProc),null,InactivityPeriod,Timeout.Infinite);
+            _timer = new Timer(new TimerCallback(TimerProc),null, _period, Timeout.Infinite);
  
         }
 

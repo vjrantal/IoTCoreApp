@@ -19,6 +19,8 @@ namespace LightControl
         private NetworkAvailabilty _networkAvailability;
         private IotHubSettings _settings;
         private InactivityTimer _inactivityTimer;
+        private InactivityTimer _lampCheckTimer;
+
         private bool _isHeaded;
         private LampHandler _lampHandler;
 
@@ -52,11 +54,14 @@ namespace LightControl
         {
             _iotHubClient = IotHubClient.Instance;
             _networkAvailability = NetworkAvailabilty.Instance;
-            _inactivityTimer = InactivityTimer.Instance;
+            _inactivityTimer = InactivityTimer.CreateTimer(InactivityTimer.InactivityPeriod);
+            _lampCheckTimer = InactivityTimer.CreateTimer(InactivityTimer.LampChecker);
             _settings = new IotHubSettings();
             _lampHandler = new LampHandler();
+
             _networkAvailability.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
             _inactivityTimer.InactivityPeriodExceeded += OnInactivityPeriodExceeded;
+            _lampCheckTimer.InactivityPeriodExceeded += OnLampCheckPeriodExceeded;
         }
 
         /// <summary>
@@ -71,7 +76,8 @@ namespace LightControl
                 if(await _iotHubClient.ConnectAsync(_settings))
                 {
                     _iotHubClient.NewMessageReceived += OnNewMessageReceivedFromIotHub;
-                    InactivityTimer.Instance.ResetTimer();
+                    _inactivityTimer.ResetTimer();
+                    _lampCheckTimer.ResetTimer();
                     SendNewEvent("Initialized");
                     return true;
                 }
@@ -85,38 +91,50 @@ namespace LightControl
         /// </summary>
         private void OnNewMessageReceivedFromIotHub(object sender, string e)
         {
+            System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub start");
+
             SendNewEvent(e);
-            InactivityTimer.Instance.ResetTimer();
-
-            Message msg = MessageParser.ParseMessage(e);
-
-            switch(msg.Type)
+            _inactivityTimer.ResetTimer();
+            try
             {
+                Message msg = MessageParser.ParseMessage(e);
 
-                case Message.MessageType.Control:
+                switch (msg.Type)
                 {
-                    _lampHandler.ControlLights((ControlMessage)msg);
-                    break;
-                }
 
-                case Message.MessageType.Stop:
-                {
-                    _lampHandler.StopLightsAsync();
-                    break;
-                }
+                    case Message.MessageType.Control:
+                        {
 
-                case Message.MessageType.Start:
-                {
-                    _lampHandler.StartLightsAsync();
-                    break;
+                            _lampHandler.ControlLightsAsync((ControlMessage)msg).Wait();
+                            break;
+                        }
+
+                    case Message.MessageType.Stop:
+                        {
+                            _lampHandler.StopLightsAsync().Wait();
+                            break;
+                        }
+
+                    case Message.MessageType.Start:
+                        {
+                            _lampHandler.StartLightsAsync().Wait();
+                            break;
+                        }
                 }
             }
+             catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub exception:");
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub end");
         }
 
         /// <summary>
         /// Event handler for network change events. 
         /// </summary>
-        private async void OnNetworkAvailabilityChanged(object sender, bool e)
+        private async Task OnNetworkAvailabilityChanged(object sender, bool e)
         {
             
             //Disconnects iothub client when the network is down
@@ -141,6 +159,22 @@ namespace LightControl
             //For now we just disconnect and connect again
             await _iotHubClient.DisconnectAsync();
             await _iotHubClient.ConnectAsync(_settings);
+        }
+
+        /// <summary>
+        /// Event handler for Lamp status check
+        /// </summary>
+        private void OnLampCheckPeriodExceeded(object sender, EventArgs e)
+        {
+            _lampCheckTimer.ResetTimer();
+
+            SendNewEvent("Number of connected lamps:" + _lampHandler.Consumers.Count);
+
+            if (_lampHandler.Consumers.Count != 2)
+            {
+                //_lampHandler = null;
+                //_lampHandler = new LampHandler();
+            }
         }
 
         /// <summary>

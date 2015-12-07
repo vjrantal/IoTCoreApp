@@ -9,7 +9,8 @@ namespace LightControl.Internal
 {
     public class NetworkAvailabilty
     {
-        public event EventHandler<bool> NetworkAvailabilityChanged;
+        public event Func<object, bool, Task> NetworkAvailabilityChanged;
+
         private static NetworkAvailabilty _networkAvailabilty;
         private bool _lastAvailability = false;
 
@@ -43,16 +44,29 @@ namespace LightControl.Internal
 
         private void NetworkInformationOnNetworkStatusChanged(object sender)
         {
-            bool available = CheckInternetAccess();
-
-            System.Diagnostics.Debug.WriteLine("NetworkInformationOnNetworkStatusChanged:" + available);
-
-            if (NetworkAvailabilityChanged != null)
+            lock (this)
             {
-                NetworkAvailabilityChanged(this, available);
-            }
+ 
+                bool available = CheckInternetAccess();
 
-            _lastAvailability = available;
+                System.Diagnostics.Debug.WriteLine("NetworkInformationOnNetworkStatusChanged:" + available);
+
+                if(NetworkAvailabilityChanged != null)
+                {
+                    Delegate[] invocationList = NetworkAvailabilityChanged.GetInvocationList();
+                    Task[] handlerTasks = new Task[invocationList.Length];
+
+                    for (int i = 0; i < invocationList.Length; i++)
+                    {
+                        handlerTasks[i] = ((Func<object, bool, Task>)invocationList[i])(this, available);
+                    }
+
+                    Task.WhenAll(handlerTasks).Wait();
+
+                }
+
+                _lastAvailability = available;
+            }
         }
 
     }
