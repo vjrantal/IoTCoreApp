@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
@@ -28,6 +29,7 @@ namespace IoTHubClient.Internal
         private ReceiverLink _receiveLink = null;
         private IotHubSettings _settings;
         private static readonly DateTime EpochTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        private SemaphoreSlim _semaphoreForLamps = new SemaphoreSlim(1, 1);
 
         public async Task<bool> ConnectAsync(IotHubSettings settings)
         {
@@ -241,7 +243,21 @@ namespace IoTHubClient.Internal
             {
                 Task.Run(() =>
                 {
-                    NewMessageReceived(this, msg);
+                    try
+                    {
+                        if (_semaphoreForLamps.Wait(3000))
+                        {
+                            NewMessageReceived(this, msg);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Instance.Write("AMQPClient.OnMessageCallback exception:" + ex.Message);
+                    }
+                    finally
+                    {
+                        _semaphoreForLamps.Release();
+                    }
                 });
             }
         }

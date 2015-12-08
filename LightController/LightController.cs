@@ -2,6 +2,7 @@
 using IoTHubClient.Internal;
 using LightControl.Internal;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
@@ -24,6 +25,7 @@ namespace LightControl
         private bool _isHeaded;
         private LampHandler _lampHandler;
 
+
         /// <summary>
         /// The LightController instance.
         /// </summary>
@@ -44,7 +46,7 @@ namespace LightControl
         public LampHandler LampHandler
         {
             get { return _lampHandler; }
-            
+
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace LightControl
 
             if (await _settings.LoadSettingsFromFileAsync())
             {
-                if(await _iotHubClient.ConnectAsync(_settings))
+                if (await _iotHubClient.ConnectAsync(_settings))
                 {
                     _iotHubClient.NewMessageReceived += OnNewMessageReceivedFromIotHub;
                     _inactivityTimer.ResetTimer();
@@ -91,20 +93,15 @@ namespace LightControl
         /// </summary>
         private async void OnNewMessageReceivedFromIotHub(object sender, string e)
         {
-            System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub start");
-
             SendNewEvent(e);
             _inactivityTimer.ResetTimer();
             try
             {
                 Message msg = MessageParser.ParseMessage(e);
-
                 switch (msg.Type)
                 {
-
                     case Message.MessageType.Control:
                         {
-
                             await _lampHandler.ControlLightsAsync((ControlMessage)msg);
                             break;
                         }
@@ -122,13 +119,11 @@ namespace LightControl
                         }
                 }
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub exception:");
+                System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub Exception:");
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
-            System.Diagnostics.Debug.WriteLine("OnNewMessageReceivedFromIotHub end");
         }
 
         /// <summary>
@@ -136,7 +131,6 @@ namespace LightControl
         /// </summary>
         private async Task OnNetworkAvailabilityChanged(object sender, bool e)
         {
-            
             //Disconnects iothub client when the network is down
             if (e)
             {
@@ -167,8 +161,6 @@ namespace LightControl
         private void OnLampCheckPeriodExceeded(object sender, EventArgs e)
         {
             _lampCheckTimer.ResetTimer();
-
-            SendNewEvent("Number of connected lamps:" + _lampHandler.Consumers.Count);
 
             if (_lampHandler.Consumers.Count != 2)
             {

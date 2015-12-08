@@ -93,16 +93,14 @@ namespace LightControl
 
             if (joinSessionResult.Status == AllJoynStatus.Ok)
             {
-                if(NewEventReceived != null)
-                {
-                    NewEventReceived(this, "New Lamp joined. ID:" + args.UniqueName);
-                }
-
-                Debug.WriteLine("LampState join session succeeded.");
-
                 Consumers.Add(args.UniqueName,joinSessionResult.Consumer);
-                
                 joinSessionResult.Consumer.SessionLost += OnConsumerSessionLost;
+
+                Debug.WriteLine("New Lamp joined. ID:" + args.UniqueName + " Lamp count: " + Consumers.Count);
+                if (NewEventReceived != null)
+                {
+                    NewEventReceived(this, "New Lamp joined. ID:" + args.UniqueName + " Lamp count: " + Consumers.Count);
+                }
             }
         }
 
