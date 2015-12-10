@@ -8,8 +8,27 @@ The app connects to the Azure IoT Hub to get cloud-to-device messages to control
 
 # Running
 
-Open the solution file (`IoTCoreApp.sln`) in Visual Studio 2015 and hit run. Requires
-Windows 10 SDK to be installed. See below for more details about the project structure.
+The IoT Hub connection information is looked up from a file called IotHubSettings.txt.
+The file is not present in the source repository (and is ignored by git to avoid accidentally
+pushing secret information).
+
+To make the connection work, create the file under `SimpleApp/Settings` or `IoTCoreApp/Settings`
+depending which you want to run (see below for more details about the project structure).
+
+The content of the file should be something like this:
+
+```
+{
+  "Host": "<some-host>.azure-devices.net", // called HostName in a connection string
+  "Port": 5671,
+  "DeviceId": "<id-of-your-device>", // called DeviceId in a connection string
+  "DeviceKey": "<key-of-your-device>" // called SharedAccessKey in a connection string
+}
+```
+
+Open the solution file (`IoTCoreApp.sln`) in Visual Studio 2015 and hit run.
+
+Requires Windows 10 SDK to be installed.
 
 # Project structure
 

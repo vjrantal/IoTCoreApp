@@ -23,6 +23,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightController", "LightCon
 		{C84C9DAE-39B8-4116-A7C0-82514145E7E6} = {C84C9DAE-39B8-4116-A7C0-82514145E7E6}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{33EA1439-7CA2-424D-ABC2-A273D044D057}"
+	ProjectSection(SolutionItems) = preProject
+		protocol.txt = protocol.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
