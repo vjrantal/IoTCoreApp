@@ -174,11 +174,6 @@ namespace LightControl
         /// </summary>
         private void SendNewEvent(string evt)
         {
-            if(evt.Length > 80)
-            {
-                evt = evt.Substring(0, 80) + "...";
-            }
-
             if(NewEventReceived != null)
             {
                 NewEventReceived(this, evt);

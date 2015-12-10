@@ -57,7 +57,7 @@ namespace SimpleApp
             if (await Controller.InitializeAsync(true))
             {
                 Controller.NewEventReceived += OnNewMessageReceived;
-                LastMessages.Add("Connected..");
+                LastMessages.Insert(0, "Connected..");
             }
         }
 
@@ -65,7 +65,7 @@ namespace SimpleApp
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                LastMessages.Add(e);
+                LastMessages.Insert(0, e);
             });
         }
 
@@ -73,7 +73,7 @@ namespace SimpleApp
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                LastMessages.Add(e);
+                LastMessages.Insert(0, e);
             });
         }
 
