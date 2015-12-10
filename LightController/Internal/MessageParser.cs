@@ -22,24 +22,24 @@ namespace LightControl.Internal
 
                 if (type.Equals("Control"))
                 {
-                    returnMessage = ControlMessage.Create(o);
+                    returnMessage = new ControlMessage(o);
                 }
                 else if (type.Equals("Start"))
                 {
-                    returnMessage = StartMessage.Create(o);
+                    returnMessage = new StartMessage(o);
                 }
                 else if (type.Equals("Stop"))
                 {
-                    returnMessage = StopMessage.Create(o);
+                    returnMessage = new StopMessage(o);
                 }
                 else
                 {
-                    returnMessage = new Message();
+                    returnMessage = new Message(null);
                 }
             }
             catch (Exception e)
             {
-                returnMessage = new Message();
+                returnMessage = new Message(null);
             }
 
             return returnMessage;

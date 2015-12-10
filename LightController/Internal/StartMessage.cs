@@ -11,16 +11,10 @@ namespace LightControl.Internal
         : Message
     {
  
-        public StartMessage() :
-            base()
+        public StartMessage(JObject obj) :
+            base(obj)
         {
             Type = MessageType.Start;
-        }
-
-        public static StartMessage Create(JObject obj)
-        {
-            StartMessage msg = new StartMessage();
-            return msg;
         }
     }
 }

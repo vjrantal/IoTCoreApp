@@ -16,22 +16,16 @@ namespace LightControl.Internal
             get; set;
         }
 
-        public ControlMessage() :
-            base()
+        public ControlMessage(JObject obj) :
+            base(obj)
         {
             Type = MessageType.Control;
             LampValue = new LampValue();
-        }
-
-        public static ControlMessage Create(JObject obj)
-        {
-            ControlMessage ctrlMsg = new ControlMessage();
-            ctrlMsg.LampValue.On = (bool)obj["On"];
-            ctrlMsg.LampValue.Brightness = (uint)obj["Brightness"];
-            ctrlMsg.LampValue.ColorTemp = (uint)obj["ColorTemp"];
-            ctrlMsg.LampValue.Hue = (uint)obj["Hue"];
-            ctrlMsg.LampValue.Saturation = (uint)obj["Saturation"];
-            return ctrlMsg;
+            LampValue.On = (bool)obj["On"];
+            LampValue.Brightness = (uint)obj["Brightness"];
+            LampValue.ColorTemp = (uint)obj["ColorTemp"];
+            LampValue.Hue = (uint)obj["Hue"];
+            LampValue.Saturation = (uint)obj["Saturation"];
         }
     }
 }

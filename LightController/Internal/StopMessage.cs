@@ -11,16 +11,11 @@ namespace LightControl.Internal
         : Message
     {
  
-        public StopMessage() :
-            base()
+        public StopMessage(JObject obj) :
+            base(obj)
         {
             Type = MessageType.Stop;
         }
 
-        public static StopMessage Create(JObject obj)
-        {
-            StopMessage msg = new StopMessage();
-            return msg;
-        }
     }
 }

@@ -93,11 +93,24 @@ namespace LightControl
         /// </summary>
         private async void OnNewMessageReceivedFromIotHub(object sender, string e)
         {
-            SendNewEvent(e);
+            
             _inactivityTimer.ResetTimer();
             try
             {
                 Message msg = MessageParser.ParseMessage(e);
+
+                if(msg.Type != Message.MessageType.Unknown)
+                {
+                    if(DateTime.UtcNow - msg.Timestamp > TimeSpan.FromMinutes(1))
+                        {
+                        //Ignores messages that are older than one minute
+                        SendNewEvent("Expired message:" + Environment.NewLine + e);
+                        return; 
+                        }
+                }
+
+                SendNewEvent(e);
+
                 switch (msg.Type)
                 {
                     case Message.MessageType.Control:

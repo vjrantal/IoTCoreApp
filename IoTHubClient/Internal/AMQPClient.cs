@@ -241,12 +241,15 @@ namespace IoTHubClient.Internal
 
             if (NewMessageReceived != null)
             {
+                
                 Task.Run(() =>
                 {
+                    bool waitSuccess = false;
                     try
                     {
                         if (_semaphoreForLamps.Wait(3000))
                         {
+                            waitSuccess = true;
                             NewMessageReceived(this, msg);
                         }
                     }
@@ -256,7 +259,8 @@ namespace IoTHubClient.Internal
                     }
                     finally
                     {
-                        _semaphoreForLamps.Release();
+                        if(waitSuccess)
+                            _semaphoreForLamps.Release();
                     }
                 });
             }

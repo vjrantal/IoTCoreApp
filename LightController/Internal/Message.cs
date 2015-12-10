@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,9 +17,31 @@ namespace LightControl.Internal
             get; set;
         }
 
-        public Message()
+        public DateTime Timestamp
+        {
+            get; set;
+        }
+
+        public Message(JObject obj)
         {
             Type = MessageType.Unknown;
+            if(obj != null)
+            {
+                JToken value;
+                if (obj.TryGetValue("Timestamp", out value))
+                {
+                    Timestamp = new DateTime((long)value);
+                } 
+                else
+                {
+                    Timestamp = DateTime.UtcNow;
+                }
+            }
+            else
+            {
+                Timestamp = DateTime.UtcNow;
+            }
+            
         }
     }
 }

@@ -5,7 +5,8 @@ Cloud to device control message that sets lights parameters
 "Brightness":0-100,
 "ColorTemp":2500-10000,
 "Hue":0-360,
-"Saturation":0-100
+"Saturation":0-100,
+"Timestamp": Message timestamp (not required)
 }
 
 Examples:
@@ -13,6 +14,8 @@ Examples:
 
 Cloud to device message that sets lights on
 {"Type":"Start"}
+{"Type":"Start", "Timestamp":123456}
 
 Cloud to device message that sets lights off
 {"Type":"Stop"}
+{"Type":"Stop", "Timestamp":123456}
