@@ -21,7 +21,6 @@ namespace IoTHubClient
         public event EventHandler<string> NewMessageReceived;
 
         private AMQPClient _amqpClient;
-        private bool _connecting = false;
 
         public IotHubEngine()
         {

@@ -21,10 +21,8 @@ namespace LightControl
         private IotHubSettings _settings;
         private InactivityTimer _inactivityTimer;
         private InactivityTimer _lampCheckTimer;
-
         private bool _isHeaded;
         private LampHandler _lampHandler;
-
 
         /// <summary>
         /// The LightController instance.
@@ -46,7 +44,6 @@ namespace LightControl
         public LampHandler LampHandler
         {
             get { return _lampHandler; }
-
         }
 
         /// <summary>

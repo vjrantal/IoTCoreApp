@@ -57,7 +57,7 @@ namespace SimpleApp
             if (await Controller.InitializeAsync(true))
             {
                 Controller.NewEventReceived += OnNewMessageReceived;
-                LastMessages.Insert(0, "Connected.. Current Time:" + DateTime.UtcNow);
+                LastMessages.Insert(0, "Connected.. Current UTC Time: " + DateTime.UtcNow);
             }
         }
 
