@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Internal\LampValue.cs" />
+    <Compile Include="Internal\BlinkMessage.cs" />
     <Compile Include="Internal\StopMessage.cs" />
     <Compile Include="Internal\StartMessage.cs" />
     <Compile Include="Internal\ControlMessage.cs" />

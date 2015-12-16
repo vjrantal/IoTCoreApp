@@ -19,3 +19,7 @@ Cloud to device message that sets lights on
 Cloud to device message that sets lights off
 {"Type":"Stop"}
 {"Type":"Stop", "Timestamp":123456}
+
+Cloud to device message that blinks lights
+{"Type":"Blink"}
+{"Type":"Blink", "Timestamp":123456}

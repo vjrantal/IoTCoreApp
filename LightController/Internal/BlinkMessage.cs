@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace LightControl.Internal
 {
-    public class StopMessage
+    public class BlinkMessage
         : Message
     {
-        public StopMessage(JObject obj) :
+        public BlinkMessage(JObject obj) :
             base(obj)
         {
-            Type = MessageType.Stop;
+            Type = MessageType.Blink;
         }
-
     }
 }

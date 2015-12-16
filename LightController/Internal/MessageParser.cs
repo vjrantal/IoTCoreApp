@@ -32,6 +32,10 @@ namespace LightControl.Internal
                 {
                     returnMessage = new StopMessage(o);
                 }
+                else if (type.Equals("Blink"))
+                {
+                    returnMessage = new BlinkMessage(o);
+                }
                 else
                 {
                     returnMessage = new Message(null);

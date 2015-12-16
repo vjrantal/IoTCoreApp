@@ -110,6 +110,12 @@ namespace LightControl
 
                 switch (msg.Type)
                 {
+                    case Message.MessageType.Blink:
+                        {
+                            await _lampHandler.BlinkLightsAsync();
+                            break;
+                        }
+
                     case Message.MessageType.Control:
                         {
                             await _lampHandler.ControlLightsAsync((ControlMessage)msg);

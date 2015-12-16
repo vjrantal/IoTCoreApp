@@ -20,6 +20,7 @@ namespace LightControl
         private LampStateWatcher _watcher;
         LampValue _defaulsWhenOff = null;
         LampValue _defaulsWhenOn = null;
+        LampValue _defaulsBeforeBlink = null;
         LampValue _lastValues = null;
 
         public IDictionary<string, LampStateConsumer> Consumers
@@ -36,8 +37,9 @@ namespace LightControl
             _watcher.Added += OnWatcherAdded;
             _watcher.Start();
 
-            _defaulsWhenOff = new LampValue() { On = false, Brightness = 90, ColorTemp = 5000, Hue = 180, Saturation = 60 };
-            _defaulsWhenOn = new LampValue() { On = true, Brightness = 90, ColorTemp = 5000, Hue = 180, Saturation = 60 };
+            _defaulsWhenOff = new LampValue() { On = false, Brightness = 90, ColorTemp = 9000, Hue = 260, Saturation = 100 };
+            _defaulsWhenOn = new LampValue() { On = true, Brightness = 90, ColorTemp = 9000, Hue = 260, Saturation = 100 };
+            _defaulsBeforeBlink = new LampValue() { On = true, Brightness = 90, ColorTemp = 9000, Hue = 260, Saturation = 100 };
             _lastValues = null;
         }
 
@@ -51,6 +53,48 @@ namespace LightControl
                 }
             }
             _lastValues = _defaulsWhenOn;
+        }
+
+        public async Task BlinkLightsAsync()
+        {
+            foreach (var consumer in Consumers)
+            {
+                if (consumer.Value != null)
+                {
+                    await SetValuesAsync(consumer.Value, _defaulsBeforeBlink);
+                }
+            }
+
+            foreach (var consumer in Consumers)
+            {
+                if (consumer.Value != null)
+                {
+                    await BlinkLightsAsync(consumer.Value);
+                }
+            }
+
+            await Task.Delay(500);
+
+            foreach (var consumer in Consumers)
+            {
+                if (consumer.Value != null)
+                {
+                    await BlinkLightsAsync(consumer.Value);
+                }
+            }
+
+            await Task.Delay(500);
+
+            if(_lastValues != null)
+            {
+                foreach (var consumer in Consumers)
+                {
+                    if (consumer.Value != null)
+                    {
+                        await SetValuesAsync(consumer.Value, _lastValues);
+                    }
+                }
+            }
         }
 
         public async Task StopLightsAsync()
@@ -86,6 +130,14 @@ namespace LightControl
             if (_lastValues == null || _lastValues.Saturation != values.Saturation) await consumer.SetSaturationAsync(getAbsoluteValue(values.Saturation));
         }
 
+        public async Task BlinkLightsAsync(LampStateConsumer consumer)
+        {
+            Dictionary<String, object> from = new Dictionary<string, object>();
+            from.Add("Hue", 200);
+            Dictionary<String, object> to = new Dictionary<string, object>();
+            to.Add("Hue", 300);
+            await consumer.ApplyPulseEffectAsync(from, to, 100, 200, 2, 0);
+        }
 
         private async void OnWatcherAdded(LampStateWatcher sender, AllJoynServiceInfo args)
         {
