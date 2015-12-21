@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "AMQPNetLite": "1.1.4",
+    "AMQPNetLite": "1.1.5",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
     "Newtonsoft.Json": "8.0.1-beta3"
   },

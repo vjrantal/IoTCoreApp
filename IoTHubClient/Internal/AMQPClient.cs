@@ -41,24 +41,20 @@ namespace IoTHubClient.Internal
                 }
                     
                 _address = new Address(_settings.Host, _settings.Port, null, null);
-                            
-                await Task.Run(() => {
-                    try
-                    {
-                        _connection = new Connection(_address);
-                    }
-                    catch (Exception e)
-                    {
-                        _connection = null;
-                        _address = null;
-                    }
-                });
+
+                try
+                {
+                    _connection = await Connection.Factory.CreateAsync(_address);
+                }
+                catch (Exception e)
+                {
+                    _connection = null;
+                    _address = null;
+                }
 
                 if (_connection == null)
                     return false;
                     
-                
-               
                 string audience = Fx.Format("{0}/devices/{1}", _settings.Host, _settings.DeviceId);
                 string resourceUri = Fx.Format("{0}/devices/{1}", _settings.Host, _settings.DeviceId);
 
@@ -183,8 +179,7 @@ namespace IoTHubClient.Internal
             request.ApplicationProperties["type"] = "azure-devices.net:sastoken";
             request.ApplicationProperties["name"] = audience;
 
-            cbsSender.Send(request,2000);
-
+            await cbsSender.SendAsync(request);
 
             // receive the response
             var response = await cbsReceiver.ReceiveAsync(2000);

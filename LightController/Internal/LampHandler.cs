@@ -37,9 +37,9 @@ namespace LightControl
             _watcher.Added += OnWatcherAdded;
             _watcher.Start();
 
-            _defaulsWhenOff = new LampValue() { On = false, Brightness = 90, ColorTemp = 9000, Hue = 260, Saturation = 100 };
-            _defaulsWhenOn = new LampValue() { On = true, Brightness = 90, ColorTemp = 9000, Hue = 260, Saturation = 100 };
-            _defaulsBeforeBlink = new LampValue() { On = true, Brightness = 90, ColorTemp = 9000, Hue = 260, Saturation = 100 };
+            _defaulsWhenOff = new LampValue() { On = false, Brightness = 100, ColorTemp = 9000, Hue = 260, Saturation = 100 };
+            _defaulsWhenOn = new LampValue() { On = true, Brightness = 100, ColorTemp = 9000, Hue = 260, Saturation = 100 };
+            _defaulsBeforeBlink = new LampValue() { On = true, Brightness = 100, ColorTemp = 9000, Hue = 260, Saturation = 100 };
             _lastValues = null;
         }
 
@@ -147,7 +147,10 @@ namespace LightControl
             {
                 Consumers.Add(args.UniqueName,joinSessionResult.Consumer);
                 joinSessionResult.Consumer.SessionLost += OnConsumerSessionLost;
-
+                if(_lastValues != null)
+                {
+                    await SetValuesAsync(joinSessionResult.Consumer, _lastValues);
+                }
                 Debug.WriteLine("New Lamp joined. ID:" + args.UniqueName + " Lamp count: " + Consumers.Count);
                 if (NewEventReceived != null)
                 {
