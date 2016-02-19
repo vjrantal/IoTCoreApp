@@ -26,9 +26,29 @@ The content of the file should be something like this:
 }
 ```
 
+See below more about getting a device id and a key.
+
 Open the solution file (`IoTCoreApp.sln`) in Visual Studio 2015 and hit run.
 
 Requires Windows 10 SDK to be installed.
+
+## Getting device id and key
+
+To get a device id and key, you first need to create an Azure IoT Hub.
+See [here](https://azure.microsoft.com/en-us/services/iot-hub/) to get started.
+
+Next, you need to create a device in the hub. One of the easiest way to do that
+is to use a tool called [iothub-explorer](https://www.npmjs.com/package/iothub-explorer),
+which can be installed like this:
+
+```
+npm install -g iothub-explorer
+```
+
+See the tool instructions from [here](https://www.npmjs.com/package/iothub-explorer),
+but the main command needed is `iothub-explorer create <name-of-you-device> --connection-string`,
+which creates a device for you and prints out the connection string from which you can get
+the values needed to configure this project.
 
 # Project structure
 
