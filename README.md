@@ -76,3 +76,10 @@ after device boot and re-started if it shuts down or crashes.
 A simple wrapper app for the main functionality that allows debugging via a simple UI and
 running the app on a Windows 10 desktop machine.
 
+# Troubleshooting
+
+* If you get a big amount of build errors with messages like
+`The type or namespace name 'System' could not be found` try to clean the solution first
+and then rebuild the solution.
+* In case the first build error is about a file called `IotHubSettings.txt` see the Running-section
+above about how to construct the required file.
